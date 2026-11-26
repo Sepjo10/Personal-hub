@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { isActive, mainNav, settingsNav, type NavItem } from "@/lib/navigation";
+import { LogoutButton } from "./logout-button";
 
 /**
  * Menú lateral de escritorio (visible desde el breakpoint "md").
@@ -32,6 +33,7 @@ export function AppSidebar() {
 
       <div className="border-t border-sidebar-border pt-4">
         <SidebarLink item={settingsNav} active={isActive(pathname, settingsNav.href)} />
+        <LogoutButton className="text-sidebar-foreground/70" />
       </div>
     </aside>
   );

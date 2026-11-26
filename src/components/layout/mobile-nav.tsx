@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Ellipsis, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isActive, mainNav, settingsNav, type NavItem } from "@/lib/navigation";
+import { LogoutButton } from "./logout-button";
 
 // En la barra inferior caben pocas secciones: las 3 primeras van fijas
 // (Inicio, Planificador, Académico) y el resto se abre desde "Más".
@@ -28,6 +29,9 @@ export function MobileNav() {
             {moreItems.map((item) => (
               <MoreLink key={item.href} item={item} active={isActive(pathname, item.href)} />
             ))}
+            <div className="mt-1 border-t border-white/5 pt-1">
+              <LogoutButton className="rounded-xl py-3" />
+            </div>
           </div>
         </div>
       )}

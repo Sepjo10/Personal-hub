@@ -1,16 +1,33 @@
-import { Bell, CalendarDays, LogOut, Palette, UserRound, type LucideIcon } from "lucide-react";
+import { Suspense } from "react";
+import { Bell, CalendarDays, Palette, UserRound, type LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LogoutButton } from "@/components/layout/logout-button";
+import { getCurrentUser } from "@/lib/auth";
 
-type SettingsSection = { icon: LucideIcon; title: string; description: string; phase?: string; action?: string };
+type SettingsSection = { icon: LucideIcon; title: string; description: React.ReactNode; phase?: string; action?: string };
 
 const sections: SettingsSection[] = [
   { icon: Palette, title: "Apariencia", description: "Modo oscuro activado. El tema claro se valorará más adelante." },
   { icon: Bell, title: "Notificaciones", description: "Recordatorios de tareas y eventos.", phase: "Fase 7" },
   { icon: CalendarDays, title: "Google Calendar", description: "Muestra tus eventos de Google en el planificador.", phase: "Fase 6", action: "Conectar" },
-  { icon: UserRound, title: "Cuenta", description: "Información de tu cuenta e inicio de sesión.", phase: "Fase 5" },
+  {
+    icon: UserRound,
+    title: "Cuenta",
+    description: (
+      <Suspense fallback={<span className="inline-block h-4 w-40 animate-pulse rounded bg-white/10" />}>
+        <AccountEmail />
+      </Suspense>
+    ),
+  },
 ];
 
-/** Configuración: de momento solo muestra las opciones previstas. */
+/** Lee el usuario en el servidor; va dentro de <Suspense> porque depende de la petición (cookies). */
+async function AccountEmail() {
+  const user = await getCurrentUser();
+  return <>Conectado como {user.email}</>;
+}
+
+/** Configuración: opciones previstas y cuenta del usuario. */
 export function SettingsView() {
   return (
     <div className="max-w-2xl space-y-3">
@@ -30,10 +47,7 @@ export function SettingsView() {
           )}
         </section>
       ))}
-      <Button variant="destructive" disabled className="mt-2">
-        <LogOut />
-        Cerrar sesión
-      </Button>
+      <LogoutButton className="glass mt-2 w-auto rounded-2xl px-5 py-3 text-destructive hover:text-destructive" />
     </div>
   );
 }

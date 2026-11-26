@@ -460,6 +460,8 @@ Implement:
 
 > Supabase, authentication and the `tasks` table already exist (done in Phase 3). Database changes live in `supabase/migrations/`.
 
+> Status (Nov 2026): DONE. All modules (including daily goals, migration 0009) use Supabase with RLS. Security checks live in `supabase/tests/security_checks.sql` and passed: RLS and 4 policies on every table, no `anon` grants, other users see 0 rows. Mock data removed.
+
 - Configure Supabase.
 - Design and create database tables.
 - Implement authentication.

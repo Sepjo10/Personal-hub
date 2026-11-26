@@ -2,7 +2,6 @@
 
 import { useActionState, useOptimistic, useState, useTransition } from "react";
 import { Minus, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { FormActions } from "@/components/common/form-actions";
 import { Modal, fieldClass, labelClass } from "@/components/common/modal";
 import { Panel } from "@/components/common/panel";

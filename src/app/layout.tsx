@@ -13,17 +13,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Personal Hub",
+  // Cada página puede definir su título; se mostrará como "Hoy · Personal Hub"
+  title: { default: "Personal Hub", template: "%s · Personal Hub" },
   description: "Dashboard personal de organización diaria, académica y personal.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+// Layout raíz: solo define <html>, <body>, fuentes y estilos globales.
+// La estructura de la app (menú, navegación) está en src/app/(app)/layout.tsx.
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

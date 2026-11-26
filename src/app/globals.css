@@ -1,27 +1,134 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
 
 /*
- * Colores base de Personal Hub (modo oscuro como apariencia principal).
- * El sistema visual completo se definirá en la Fase 2.
+ * SISTEMA VISUAL DE PERSONAL HUB
+ * La app es oscura por defecto (la clase "dark" está en <html>), así que los
+ * colores oscuros se definen directamente en :root.
+ * Los nombres (background, card, primary...) son los que usan los
+ * componentes de shadcn/ui: si cambiamos un valor aquí, cambia en toda la app.
+ * Formato oklch(luminosidad croma tono): el tono 285-295 corresponde al violeta.
  */
 :root {
-  --background: #0f0d17; /* fondo oscuro con matiz violeta, sin negro absoluto */
-  --foreground: #ece9f5; /* texto principal */
-  --muted: #9a94ad; /* texto secundario */
-  --accent: #8b5cf6; /* violeta de acento */
+  --radius: 0.875rem;
+
+  /* Superficies */
+  --background: oklch(0.16 0.02 285); /* fondo: oscuro con matiz violeta, no negro */
+  --foreground: oklch(0.96 0.01 285); /* texto principal */
+  --card: oklch(0.21 0.025 285); /* tarjetas (se usan semitransparentes con .glass) */
+  --card-foreground: oklch(0.96 0.01 285);
+  --popover: oklch(0.21 0.025 285);
+  --popover-foreground: oklch(0.96 0.01 285);
+
+  /* Acento violeta */
+  --primary: oklch(0.65 0.2 293);
+  --primary-foreground: oklch(0.99 0 0);
+
+  /* Variantes neutras */
+  --secondary: oklch(0.26 0.03 285);
+  --secondary-foreground: oklch(0.96 0.01 285);
+  --muted: oklch(0.24 0.025 285); /* fondos apagados */
+  --muted-foreground: oklch(0.7 0.03 285); /* texto secundario */
+  --accent: oklch(0.28 0.05 290); /* fondo al pasar el ratón */
+  --accent-foreground: oklch(0.96 0.01 285);
+  --destructive: oklch(0.7 0.19 22);
+
+  /* Bordes y foco */
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.65 0.2 293);
+
+  /* Gráficos (finanzas, lecturas...) */
+  --chart-1: oklch(0.65 0.2 293);
+  --chart-2: oklch(0.7 0.15 250);
+  --chart-3: oklch(0.72 0.16 340);
+  --chart-4: oklch(0.75 0.13 175);
+  --chart-5: oklch(0.8 0.14 75);
+
+  /* Menú lateral */
+  --sidebar: oklch(0.18 0.022 285);
+  --sidebar-foreground: oklch(0.9 0.015 285);
+  --sidebar-primary: oklch(0.65 0.2 293);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.65 0.2 293 / 14%);
+  --sidebar-accent-foreground: oklch(0.88 0.08 293);
+  --sidebar-border: oklch(1 0 0 / 7%);
+  --sidebar-ring: oklch(0.65 0.2 293);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-geist-sans);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+/*
+ * Utilidad propia: superficie de "cristal" (glassmorphism moderado).
+ * Uso: <div className="glass rounded-2xl">...</div>
+ */
+@utility glass {
+  background-color: color-mix(in oklch, var(--card) 60%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Dos halos violetas muy suaves para dar profundidad al fondo */
+    background-image:
+      radial-gradient(60rem 40rem at 0% -10%, oklch(0.45 0.2 293 / 16%), transparent 60%),
+      radial-gradient(50rem 30rem at 100% 0%, oklch(0.5 0.18 320 / 8%), transparent 60%);
+    background-attachment: fixed;
+  }
 }

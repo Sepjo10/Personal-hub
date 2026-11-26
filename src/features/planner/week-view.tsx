@@ -44,7 +44,13 @@ export async function WeekView({ searchParams }: { searchParams: SearchParams })
               </div>
               <ul className="space-y-1.5 text-xs">
                 {items.events.map((e) => (
-                  <li key={e.id} className="rounded-md border-l-2 border-primary bg-primary/10 px-2 py-1">
+                  <li
+                    key={e.id}
+                    className={cn(
+                      "rounded-md border-l-2 px-2 py-1",
+                      e.kind === "google" ? "border-emerald-400 bg-emerald-400/10" : "border-primary bg-primary/10",
+                    )}
+                  >
                     {e.startTime && <span className="text-muted-foreground">{e.startTime} </span>}
                     {e.title}
                   </li>

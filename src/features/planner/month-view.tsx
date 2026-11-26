@@ -14,6 +14,7 @@ const kindColor: Record<EventKind, string> = {
   deadline: "bg-amber-400",
   class: "bg-sky-400",
   personal: "bg-primary",
+  google: "bg-emerald-400",
 };
 
 const PATH = "/planificador/mes";
@@ -81,6 +82,7 @@ export async function MonthView({ searchParams }: { searchParams: SearchParams }
         <Legend color="bg-amber-400" label="Entrega" />
         <Legend color="bg-sky-400" label="Clase" />
         <Legend color="bg-primary" label="Personal" />
+        <Legend color="bg-emerald-400" label="Google" />
         <Legend color="bg-white/40" label="Tarea" />
       </div>
       <EventsNote />

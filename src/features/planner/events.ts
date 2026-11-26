@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import { addDays, daysBetween, weekdayIndex } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
+import { getGoogleEvents } from "@/lib/google/calendar";
 import type { CalendarEvent } from "@/types/planner";
 import {
   DATE_COLUMNS,
@@ -18,20 +19,21 @@ import {
  *  - Exámenes y entregas.
  *  - Actividades con fecha.
  *  - Entrevistas de las candidaturas.
- * En la Fase 6 se añadirán aquí los eventos de Google Calendar.
+ *  - Eventos de Google Calendar (si está conectado; si falla, se omiten).
  * No se duplica nada en la base de datos: los eventos se calculan al leer.
  */
 export async function getCalendarEvents(from: string, to: string): Promise<CalendarEvent[]> {
   await getCurrentUser();
   const supabase = await createClient();
 
-  const [subjects, sessions, dates, activities, applications] = await Promise.all([
+  const [subjects, sessions, dates, activities, applications, google] = await Promise.all([
     supabase.from("subjects").select(SUBJECT_COLUMNS).eq("active", true),
     supabase.from("class_sessions").select(SESSION_COLUMNS),
     supabase.from("academic_dates").select(DATE_COLUMNS).gte("date", from).lte("date", to).eq("done", false),
     supabase.from("activities").select("id, title, date, time, location").gte("date", from).lte("date", to),
     // Solo las que tienen alguna entrevista; el filtro por fechas se hace abajo
     supabase.from("job_applications").select("id, company, interviews").neq("interviews", "{}"),
+    getGoogleEvents(from, to),
   ]);
 
   const error = subjects.error ?? sessions.error ?? dates.error ?? activities.error ?? applications.error;
@@ -91,5 +93,6 @@ export async function getCalendarEvents(from: string, to: string): Promise<Calen
     }
   }
 
+  events.push(...google);
   return events;
 }

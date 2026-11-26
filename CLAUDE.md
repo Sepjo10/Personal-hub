@@ -471,6 +471,8 @@ Implement:
 
 ### Phase 6 — Google Calendar
 
+> Status (Nov 2026): DONE. Read-only OAuth (`calendar.readonly`) with CSRF `state` cookie; refresh token encrypted with AES-256-GCM (`GOOGLE_TOKEN_KEY`) in `google_connections` (migration 0010, RLS). Code in `src/lib/google/` and `src/app/api/google/`. Events are fetched on read (no DB copy, no two-way sync), shown in green with kind `google`; calendar selection and connect/disconnect in Configuración. Tested: cancel, revoked permission (reconnect prompt), calendar selection, encrypted token, RLS. The OAuth app is in Testing mode (7-day token expiry); publish it to Production in Phase 8.
+
 - Configure OAuth.
 - Connect Google Calendar.
 - Retrieve events.

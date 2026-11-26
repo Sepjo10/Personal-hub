@@ -18,7 +18,8 @@ export type Task = {
   status: TaskStatus;
 };
 
-export type EventKind = "class" | "exam" | "deadline" | "personal";
+/** "google": evento importado de Google Calendar (solo lectura). */
+export type EventKind = "class" | "exam" | "deadline" | "personal" | "google";
 
 export type CalendarEvent = {
   id: string;

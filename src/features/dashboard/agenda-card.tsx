@@ -8,10 +8,13 @@ type AgendaItem =
   | { type: "event"; time: string; event: CalendarEvent }
   | { type: "task"; time: string; task: Task };
 
-/** Agenda cronológica del día: mezcla eventos y tareas, diferenciándolos visualmente. */
+/**
+ * Agenda cronológica del día: mezcla eventos y tareas, diferenciándolos visualmente.
+ * Los eventos sin hora (día completo) van primero con la etiqueta "Todo el día".
+ */
 export function AgendaCard({ events, tasks }: { events: CalendarEvent[]; tasks: Task[] }) {
   const items: AgendaItem[] = [
-    ...events.filter((e) => e.startTime).map((e) => ({ type: "event" as const, time: e.startTime!, event: e })),
+    ...events.map((e) => ({ type: "event" as const, time: e.startTime ?? "", event: e })),
     ...tasks.filter((t) => t.time).map((t) => ({ type: "task" as const, time: t.time!, task: t })),
   ].sort((a, b) => a.time.localeCompare(b.time));
 
@@ -23,7 +26,9 @@ export function AgendaCard({ events, tasks }: { events: CalendarEvent[]; tasks: 
         <ul className="space-y-1">
           {items.map((item) => (
             <li key={item.type === "event" ? item.event.id : item.task.id} className="flex gap-4 rounded-xl p-2 hover:bg-white/[0.03]">
-              <span className="w-12 shrink-0 pt-0.5 text-sm tabular-nums text-muted-foreground">{item.time}</span>
+              <span className="w-12 shrink-0 pt-0.5 text-sm leading-tight tabular-nums text-muted-foreground">
+                {item.time || <span className="text-xs">Todo el día</span>}
+              </span>
               {item.type === "event" ? <EventRow event={item.event} /> : <TaskRow task={item.task} />}
             </li>
           ))}
@@ -35,8 +40,11 @@ export function AgendaCard({ events, tasks }: { events: CalendarEvent[]; tasks: 
 
 function EventRow({ event }: { event: CalendarEvent }) {
   return (
-    <div className="min-w-0 flex-1 border-l-2 border-primary pl-3">
-      <p className="font-medium">{event.title}</p>
+    <div className={cn("min-w-0 flex-1 border-l-2 pl-3", event.kind === "google" ? "border-emerald-400" : "border-primary")}>
+      <p className="flex items-center gap-2 font-medium">
+        <span className="truncate">{event.title}</span>
+        {event.kind === "google" && <span className="text-xs font-normal text-emerald-300">Google</span>}
+      </p>
       <p className="flex items-center gap-1 text-xs text-muted-foreground">
         {event.endTime && <span>hasta las {event.endTime}</span>}
         {event.location && (

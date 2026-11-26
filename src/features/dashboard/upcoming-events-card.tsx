@@ -7,6 +7,7 @@ const kindLabel: Record<EventKind, { label: string; className: string }> = {
   deadline: { label: "Entrega", className: "bg-amber-400/15 text-amber-300" },
   class: { label: "Clase", className: "bg-sky-400/15 text-sky-300" },
   personal: { label: "Personal", className: "bg-primary/15 text-primary" },
+  google: { label: "Google", className: "bg-emerald-400/15 text-emerald-300" },
 };
 
 /** Próximos eventos a partir de mañana (los de hoy ya están en la agenda). */

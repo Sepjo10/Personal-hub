@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { formatCurrency } from "@/lib/format";
 import type { MonthSummary } from "@/data/mock/finance";
+import { SERIES } from "./chart-colors";
 
 /**
  * Gráficas de Finanzas dibujadas con SVG, sin librerías externas.
  * Son componentes de cliente porque reaccionan al ratón (tooltip al pasar por encima).
- *
- * Colores comprobados para daltonismo sobre fondo oscuro:
- * ingresos = violeta, gastos = ámbar (rojo/verde se confunden con deuteranopía).
  */
-export const SERIES = { income: "#8b5cf6", expenses: "#d97706" };
 
 const W = 600; // sistema de coordenadas interno; el SVG se escala al ancho disponible
 const H = 220;
@@ -127,7 +124,8 @@ export function BalanceChart({ data }: { data: MonthSummary[] }) {
   const [active, setActive] = useState<number | null>(null);
   const values = data.map((d) => d.income - d.expenses);
   const max = niceCeil(Math.max(...values, 0));
-  const min = Math.min(0, -niceCeil(Math.abs(Math.min(...values, 0))) * (Math.min(...values) < 0 ? 1 : 0));
+  const lowest = Math.min(...values);
+  const min = lowest < 0 ? -niceCeil(-lowest) : 0; // si algún mes hay saldo negativo, el eje baja de 0
   const y = (v: number) => PAD.top + plotH - ((v - min) / (max - min)) * plotH;
   const step = plotW / data.length;
   const x = (i: number) => PAD.left + step * i + step / 2;

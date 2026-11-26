@@ -1,0 +1,3 @@
+# Guarda todos los archivos de texto con saltos de línea LF (estándar en Git),
+# aunque en Windows se trabaje con CRLF. Evita los avisos "LF will be replaced by CRLF".
+* text=auto eol=lf

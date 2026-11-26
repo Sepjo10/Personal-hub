@@ -6,7 +6,8 @@ import { formatCurrency } from "@/lib/format";
 import { getToday } from "@/lib/today";
 import { cn } from "@/lib/utils";
 import { getMockMonthlyHistory, getMockTransactions } from "@/data/mock/finance";
-import { BalanceChart, IncomeExpenseChart, SERIES } from "./finance-charts";
+import { SERIES } from "./chart-colors";
+import { BalanceChart, IncomeExpenseChart } from "./finance-charts";
 
 /** Finanzas: resumen del mes, gastos por categoría y movimientos. */
 export async function FinanceView() {

@@ -97,22 +97,22 @@ Avoid implementing different styles for the same type of component in different 
 
 ## 5. Main Navigation
 
-The application will contain the following sections:
+To avoid an overcrowded interface, the 10 functional areas are grouped into 6 main sections. No functionality is removed; related views are grouped as tabs inside a section.
 
-1. Home
-2. Today
-3. Week
-4. Month
-5. Academic
-6. Finances
-7. Reading
-8. Activities
-9. Notes
-10. Settings
+1. Home — main dashboard.
+2. Planner — tabs: Today, Week, Month (sections 6.2–6.4).
+3. Academic — tabs: University, Career (section 6.5).
+4. Finances (section 6.6).
+5. Leisure — tabs: Reading, Activities (sections 6.7–6.8).
+6. Notes (section 6.9).
+
+Settings (section 6.10) is not a main section: it is placed at the bottom of the sidebar, next to the account information.
+
+On mobile, use a compact bottom navigation (for example: Home, Planner, quick-add button, Academic, More) where "More" gives access to the remaining sections.
 
 Include a quick action to create a task from any main section.
 
-The Home section should act as the main dashboard.
+The Home section should act as the main dashboard and must show only essential information.
 
 ## 6. Functional Requirements
 

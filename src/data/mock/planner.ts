@@ -1,22 +1,12 @@
 import { addDays } from "@/lib/dates";
-import type { CalendarEvent, DailyGoal, Task } from "@/types/planner";
+import type { CalendarEvent, DailyGoal } from "@/types/planner";
 
 /**
- * DATOS FICTICIOS para el desarrollo visual (Fases 2-4).
+ * DATOS FICTICIOS para el desarrollo visual. Las tareas ya vienen de Supabase;
+ * los eventos se sustituirán por Google Calendar (Fase 6) y los objetivos más adelante.
  * Se generan a partir de la fecha de hoy para que siempre parezcan actuales.
  * En la Fase 5 se sustituirán por consultas a Supabase con la misma forma (tipos).
  */
-
-export function getMockTasks(today: string): Task[] {
-  return [
-    { id: "t1", title: "Terminar práctica 3 de Redes", dueDate: today, time: "11:00", category: "Universidad", priority: "high", status: "pending" },
-    { id: "t2", title: "Repasar tema 5 de Algoritmia", dueDate: today, category: "Universidad", priority: "high", status: "pending" },
-    { id: "t3", title: "Enviar CV a la oferta de prácticas", dueDate: today, time: "17:30", category: "Carrera", priority: "medium", status: "pending" },
-    { id: "t4", title: "Pagar la cuota del gimnasio", dueDate: today, category: "Personal", priority: "low", status: "completed" },
-    { id: "t5", title: "Responder correo del tutor", dueDate: today, category: "Universidad", priority: "medium", status: "completed" },
-    { id: "t6", title: "Comprar billetes para Navidad", dueDate: addDays(today, 1), category: "Personal", priority: "medium", status: "pending" },
-  ];
-}
 
 export function getMockEvents(today: string): CalendarEvent[] {
   return [

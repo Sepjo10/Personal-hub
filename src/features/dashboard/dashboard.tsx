@@ -2,7 +2,9 @@ import Link from "next/link";
 import { connection } from "next/server";
 import { ArrowRight } from "lucide-react";
 import { formatLongDate, greeting, todayISO } from "@/lib/dates";
-import { getMockEvents, getMockGoals, getMockTasks } from "@/data/mock/planner";
+import { getTasksInRange } from "@/features/planner/data";
+import { EventsNote } from "@/features/planner/events-note";
+import { getMockEvents, getMockGoals } from "@/data/mock/planner";
 import { AgendaCard } from "./agenda-card";
 import { GoalsCard } from "./goals-card";
 import { PrioritiesCard } from "./priorities-card";
@@ -20,12 +22,11 @@ export async function Dashboard() {
   const now = new Date();
   const today = todayISO(now);
 
-  // Fase 5: estas tres líneas pasarán a leer de Supabase.
-  const tasks = getMockTasks(today);
+  // Tareas reales desde Supabase; eventos y objetivos siguen siendo de ejemplo.
+  const todayTasks = await getTasksInRange(today, today);
   const events = getMockEvents(today);
   const goals = getMockGoals();
 
-  const todayTasks = tasks.filter((t) => t.dueDate === today);
   const todayEvents = events.filter((e) => e.date === today);
 
   return (
@@ -47,6 +48,7 @@ export async function Dashboard() {
         <div className="space-y-4 lg:col-span-2">
           <PrioritiesCard tasks={todayTasks} />
           <AgendaCard events={todayEvents} tasks={todayTasks} />
+          <EventsNote />
         </div>
         <div className="space-y-4">
           <TaskSummaryCard tasks={todayTasks} />

@@ -75,3 +75,16 @@ export function formatDate(iso: string, options: Intl.DateTimeFormatOptions): st
 }
 
 export const WEEKDAYS_SHORT = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+/** Primer día del mes desplazado n meses: addMonths("2026-11-26", 1) -> "2026-12-01". */
+export function addMonths(iso: string, months: number): string {
+  const [y, m] = iso.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1 + months, 1)).toISOString().slice(0, 10);
+}
+
+/** Comprueba que un texto es una fecha real "AAAA-MM-DD" (sirve para validar la URL). */
+export function isValidISODate(value: unknown): value is string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T12:00:00Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}

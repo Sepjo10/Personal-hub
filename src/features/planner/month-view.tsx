@@ -1,7 +1,10 @@
-import { formatDate, monthGridDays, WEEKDAYS_SHORT } from "@/lib/dates";
+import { addMonths, formatDate, monthGridDays, WEEKDAYS_SHORT } from "@/lib/dates";
 import { getToday } from "@/lib/today";
 import { cn } from "@/lib/utils";
-import { getMockEvents, getMockTasks } from "@/data/mock/planner";
+import { getMockEvents } from "@/data/mock/planner";
+import { getTasksInRange } from "./data";
+import { EventsNote } from "./events-note";
+import { getBaseDate, type SearchParams } from "./search-params";
 import type { EventKind } from "@/types/planner";
 import { itemsForDate } from "./day-items";
 import { DateNav } from "./date-nav";
@@ -13,17 +16,26 @@ const kindColor: Record<EventKind, string> = {
   personal: "bg-primary",
 };
 
-/** Vista Mes: cuadrícula de 6 semanas. En móvil muestra puntos; en escritorio, títulos. */
-export async function MonthView() {
+const PATH = "/planificador/mes";
+
+/** Vista Mes: cuadrícula de 6 semanas. En móvil muestra puntos; en escritorio, títulos. Navegable con ?fecha=. */
+export async function MonthView({ searchParams }: { searchParams: SearchParams }) {
   const today = await getToday();
-  const days = monthGridDays(today);
-  const month = today.slice(0, 7);
-  const tasks = getMockTasks(today);
+  const base = await getBaseDate(searchParams, today);
+  const days = monthGridDays(base);
+  const month = base.slice(0, 7);
+  const isCurrentMonth = month === today.slice(0, 7);
+  const tasks = await getTasksInRange(days[0], days[days.length - 1]);
   const events = getMockEvents(today);
 
   return (
     <>
-      <DateNav label={formatDate(today, { month: "long", year: "numeric" })} />
+      <DateNav
+        label={formatDate(base, { month: "long", year: "numeric" })}
+        prevHref={`${PATH}?fecha=${addMonths(base, -1)}`}
+        nextHref={`${PATH}?fecha=${addMonths(base, 1)}`}
+        todayHref={isCurrentMonth ? undefined : PATH}
+      />
       <div className="glass overflow-hidden rounded-2xl">
         <div className="grid grid-cols-7 border-b border-white/5 text-center text-xs text-muted-foreground">
           {WEEKDAYS_SHORT.map((d) => (
@@ -69,6 +81,7 @@ export async function MonthView() {
         <Legend color="bg-primary" label="Personal" />
         <Legend color="bg-white/40" label="Tarea" />
       </div>
+      <EventsNote />
     </>
   );
 }

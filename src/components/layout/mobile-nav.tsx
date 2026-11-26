@@ -7,6 +7,7 @@ import { Ellipsis, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { isActive, mainNav, settingsNav, type NavItem } from "@/lib/navigation";
 import { LogoutButton } from "./logout-button";
+import { useTaskDialog } from "@/features/planner/task-dialog";
 
 // En la barra inferior caben pocas secciones: las 3 primeras van fijas
 // (Inicio, Planificador, Académico) y el resto se abre desde "Más".
@@ -17,6 +18,7 @@ const moreItems = [...mainNav.slice(3), settingsNav];
 export function MobileNav() {
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
+  const { openCreate } = useTaskDialog();
   const moreActive = moreItems.some((i) => isActive(pathname, i.href));
 
   return (
@@ -40,9 +42,10 @@ export function MobileNav() {
         <BarLink item={primaryItems[0]} active={isActive(pathname, primaryItems[0].href)} />
         <BarLink item={primaryItems[1]} active={isActive(pathname, primaryItems[1].href)} />
 
-        {/* Acceso rápido para crear tareas (se conectará en la Fase 3) */}
+        {/* Acceso rápido para crear tareas */}
         <button
           type="button"
+          onClick={() => openCreate()}
           aria-label="Nueva tarea"
           className="grid size-11 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition-transform active:scale-95"
         >

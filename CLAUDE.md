@@ -436,6 +436,8 @@ At this stage, mock data is acceptable.
 
 ### Phase 3 — Productivity functionality
 
+> Decision (Nov 2026): the Supabase basics (project, auth, `tasks` table with RLS) were brought forward into this phase so tasks are persistent and synced from the start. Phase 5 extends Supabase to the remaining modules.
+
 - Implement task creation and editing.
 - Implement task completion.
 - Implement daily agenda.
@@ -455,6 +457,8 @@ Implement:
 - Notes.
 
 ### Phase 5 — Backend and authentication
+
+> Supabase, authentication and the `tasks` table already exist (done in Phase 3). Database changes live in `supabase/migrations/`.
 
 - Configure Supabase.
 - Design and create database tables.

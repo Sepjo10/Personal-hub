@@ -30,10 +30,12 @@ export type CalendarEvent = {
   kind: EventKind;
 };
 
+/** Objetivo diario: target es la meta, current lo que llevas hoy y step lo que suma cada pulsación de +. */
 export type DailyGoal = {
   id: string;
   label: string;
   current: number;
   target: number;
+  step: number;
   unit: string;
 };

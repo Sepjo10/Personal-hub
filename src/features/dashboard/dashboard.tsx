@@ -4,10 +4,10 @@ import { ArrowRight } from "lucide-react";
 import { addDays, formatLongDate, greeting, todayISO } from "@/lib/dates";
 import { getTasksInRange } from "@/features/planner/data";
 import { EventsNote } from "@/features/planner/events-note";
-import { getMockGoals } from "@/data/mock/planner";
 import { getCalendarEvents } from "@/features/planner/events";
 import { AgendaCard } from "./agenda-card";
 import { GoalsCard } from "./goals-card";
+import { getGoalsForDay } from "./goals-data";
 import { PrioritiesCard } from "./priorities-card";
 import { TaskSummaryCard } from "./task-summary-card";
 import { UpcomingEventsCard } from "./upcoming-events-card";
@@ -23,9 +23,12 @@ export async function Dashboard() {
   const now = new Date();
   const today = todayISO(now);
 
-  // Tareas y eventos reales (próximos 30 días); los objetivos diarios siguen siendo de ejemplo.
-  const [todayTasks, events] = await Promise.all([getTasksInRange(today, today), getCalendarEvents(today, addDays(today, 30))]);
-  const goals = getMockGoals();
+  // Tareas de hoy, eventos de los próximos 30 días y objetivos con el progreso de hoy, en paralelo.
+  const [todayTasks, events, goals] = await Promise.all([
+    getTasksInRange(today, today),
+    getCalendarEvents(today, addDays(today, 30)),
+    getGoalsForDay(today),
+  ]);
 
   const todayEvents = events.filter((e) => e.date === today);
 

@@ -1,8 +1,14 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/layout/coming-soon";
+import { ViewSkeleton } from "@/components/common/view-skeleton";
+import { ReadingView } from "@/features/leisure/reading-view";
 
 export const metadata: Metadata = { title: "Lecturas" };
 
 export default function ReadingPage() {
-  return <ComingSoon title="Lecturas" items={["Libro actual y progreso", "Pendientes y terminados", "Valoraciones y notas", "Resumen anual"]} />;
+  return (
+    <Suspense fallback={<ViewSkeleton />}>
+      <ReadingView />
+    </Suspense>
+  );
 }

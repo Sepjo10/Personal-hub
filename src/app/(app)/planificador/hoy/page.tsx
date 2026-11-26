@@ -1,8 +1,14 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/layout/coming-soon";
+import { ViewSkeleton } from "@/components/common/view-skeleton";
+import { TodayView } from "@/features/planner/today-view";
 
 export const metadata: Metadata = { title: "Hoy" };
 
 export default function TodayPage() {
-  return <ComingSoon title="Hoy" items={["Tareas pendientes y completadas", "Prioridades", "Agenda cronológica", "Planificar mañana"]} />;
+  return (
+    <Suspense fallback={<ViewSkeleton />}>
+      <TodayView />
+    </Suspense>
+  );
 }

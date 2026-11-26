@@ -52,3 +52,26 @@ export function greeting(now: Date = new Date()): string {
   if (hour < 21) return "Buenas tardes";
   return "Buenas noches";
 }
+
+/** Día de la semana empezando en lunes: 0 = lunes ... 6 = domingo. */
+export function weekdayIndex(iso: string): number {
+  return (new Date(`${iso}T12:00:00Z`).getUTCDay() + 6) % 7;
+}
+
+/** Lunes de la semana de una fecha. */
+export function startOfWeek(iso: string): string {
+  return addDays(iso, -weekdayIndex(iso));
+}
+
+/** Las 42 casillas (6 semanas) del calendario mensual que contiene la fecha. */
+export function monthGridDays(iso: string): string[] {
+  const start = startOfWeek(`${iso.slice(0, 8)}01`);
+  return Array.from({ length: 42 }, (_, i) => addDays(start, i));
+}
+
+/** Formato libre en español, p. ej. formatDate(iso, { day: "numeric", month: "short" }) -> "26 nov". */
+export function formatDate(iso: string, options: Intl.DateTimeFormatOptions): string {
+  return new Intl.DateTimeFormat("es-ES", { ...options, timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+}
+
+export const WEEKDAYS_SHORT = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];

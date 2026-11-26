@@ -1,8 +1,14 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { ComingSoon } from "@/components/layout/coming-soon";
+import { ViewSkeleton } from "@/components/common/view-skeleton";
+import { CareerView } from "@/features/academic/career-view";
 
 export const metadata: Metadata = { title: "Carrera" };
 
 export default function CareerPage() {
-  return <ComingSoon title="Carrera" items={["Candidaturas", "Estado de cada proceso", "Entrevistas", "Próximos pasos"]} />;
+  return (
+    <Suspense fallback={<ViewSkeleton />}>
+      <CareerView />
+    </Suspense>
+  );
 }

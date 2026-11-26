@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { ArrowRight } from "lucide-react";
-import { formatLongDate, greeting, todayISO } from "@/lib/dates";
+import { addDays, formatLongDate, greeting, todayISO } from "@/lib/dates";
 import { getTasksInRange } from "@/features/planner/data";
 import { EventsNote } from "@/features/planner/events-note";
-import { getMockEvents, getMockGoals } from "@/data/mock/planner";
+import { getMockGoals } from "@/data/mock/planner";
+import { getCalendarEvents } from "@/features/planner/events";
 import { AgendaCard } from "./agenda-card";
 import { GoalsCard } from "./goals-card";
 import { PrioritiesCard } from "./priorities-card";
@@ -22,9 +23,8 @@ export async function Dashboard() {
   const now = new Date();
   const today = todayISO(now);
 
-  // Tareas reales desde Supabase; eventos y objetivos siguen siendo de ejemplo.
-  const todayTasks = await getTasksInRange(today, today);
-  const events = getMockEvents(today);
+  // Tareas y eventos reales (próximos 30 días); los objetivos diarios siguen siendo de ejemplo.
+  const [todayTasks, events] = await Promise.all([getTasksInRange(today, today), getCalendarEvents(today, addDays(today, 30))]);
   const goals = getMockGoals();
 
   const todayEvents = events.filter((e) => e.date === today);

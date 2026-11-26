@@ -1,9 +1,9 @@
 import { addDays, formatDate, startOfWeek, WEEKDAYS_SHORT } from "@/lib/dates";
 import { getToday } from "@/lib/today";
 import { cn } from "@/lib/utils";
-import { getMockEvents } from "@/data/mock/planner";
 import { AddTaskButton } from "./add-task-button";
 import { getTasksInRange } from "./data";
+import { getCalendarEvents } from "./events";
 import { itemsForDate } from "./day-items";
 import { DateNav } from "./date-nav";
 import { EventsNote } from "./events-note";
@@ -18,8 +18,7 @@ export async function WeekView({ searchParams }: { searchParams: SearchParams })
   const monday = startOfWeek(await getBaseDate(searchParams, today));
   const isCurrentWeek = monday === startOfWeek(today);
   const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
-  const tasks = await getTasksInRange(days[0], days[6]);
-  const events = getMockEvents(today);
+  const [tasks, events] = await Promise.all([getTasksInRange(days[0], days[6]), getCalendarEvents(days[0], days[6])]);
 
   const label = `${formatDate(days[0], { day: "numeric", month: "short" })} – ${formatDate(days[6], { day: "numeric", month: "short", year: "numeric" })}`;
 

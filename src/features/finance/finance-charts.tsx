@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { formatCurrency } from "@/lib/format";
-import type { MonthSummary } from "@/data/mock/finance";
+import type { MonthSummary } from "@/types/finance";
 import { SERIES } from "./chart-colors";
 
 /**

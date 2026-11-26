@@ -1,8 +1,8 @@
-/** Aviso: los eventos aún son de ejemplo hasta conectar Google Calendar. */
+/** Aviso: qué incluyen los eventos del calendario. */
 export function EventsNote() {
   return (
     <p className="mt-3 text-xs text-muted-foreground/70">
-      Los eventos son de ejemplo hasta conectar Google Calendar (Fase 6). Las tareas ya son reales.
+      Eventos: clases, exámenes, entregas y actividades. Google Calendar se conectará en la Fase 6.
     </p>
   );
 }

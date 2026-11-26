@@ -1,21 +1,27 @@
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
 import { Panel } from "@/components/common/panel";
 import { ProgressBar } from "@/components/common/progress-bar";
-import { formatDate } from "@/lib/dates";
+import { addMonths, formatDate } from "@/lib/dates";
 import { formatCurrency } from "@/lib/format";
 import { getToday } from "@/lib/today";
 import { cn } from "@/lib/utils";
-import { getMockMonthlyHistory, getMockTransactions } from "@/data/mock/finance";
+import { DateNav } from "@/features/planner/date-nav";
+import { getBaseDate, type SearchParams } from "@/features/planner/search-params";
 import { SERIES } from "./chart-colors";
+import { getFinanceData } from "./data";
 import { BalanceChart, IncomeExpenseChart } from "./finance-charts";
+import { TransactionsPanel } from "./transactions-panel";
 
-/** Finanzas: resumen del mes, gastos por categoría y movimientos. */
-export async function FinanceView() {
+const PATH = "/finanzas";
+
+/** Finanzas: resumen del mes, gráficas, gastos por categoría y movimientos. Navegable con ?fecha=. */
+export async function FinanceView({ searchParams }: { searchParams: SearchParams }) {
   const today = await getToday();
-  const month = today.slice(0, 7);
-  const transactions = getMockTransactions(today)
-    .filter((t) => t.date.startsWith(month))
-    .sort((a, b) => b.date.localeCompare(a.date));
+  const base = await getBaseDate(searchParams, today);
+  const monthStart = `${base.slice(0, 8)}01`;
+  const isCurrentMonth = monthStart.slice(0, 7) === today.slice(0, 7);
+
+  const { transactions, history } = await getFinanceData(monthStart);
 
   const income = transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0);
   const expenses = transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0);
@@ -27,11 +33,15 @@ export async function FinanceView() {
     byCategory.set(t.category, (byCategory.get(t.category) ?? 0) + t.amount);
   }
   const categories = [...byCategory.entries()].sort((a, b) => b[1] - a[1]);
-  const history = getMockMonthlyHistory(today, { income, expenses });
 
   return (
     <div className="space-y-4">
-      <p className="text-sm capitalize text-muted-foreground">{formatDate(today, { month: "long", year: "numeric" })}</p>
+      <DateNav
+        label={formatDate(monthStart, { month: "long", year: "numeric" })}
+        prevHref={`${PATH}?fecha=${addMonths(monthStart, -1)}`}
+        nextHref={`${PATH}?fecha=${addMonths(monthStart, 1)}`}
+        todayHref={isCurrentMonth ? undefined : PATH}
+      />
       <div className="grid gap-3 sm:grid-cols-3">
         <Stat icon={<ArrowUpRight />} label="Ingresos" value={formatCurrency(income)} color={SERIES.income} />
         <Stat icon={<ArrowDownRight />} label="Gastos" value={formatCurrency(expenses)} color={SERIES.expenses} />
@@ -47,33 +57,23 @@ export async function FinanceView() {
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Gastos por categoría">
-          <ul className="space-y-3">
-            {categories.map(([category, amount]) => (
-              <li key={category}>
-                <div className="mb-1 flex justify-between text-sm">
-                  <span>{category}</span>
-                  <span className="tabular-nums text-muted-foreground">{formatCurrency(amount)}</span>
-                </div>
-                <ProgressBar value={(amount / expenses) * 100} />
-              </li>
-            ))}
-          </ul>
+          {categories.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Sin gastos este mes.</p>
+          ) : (
+            <ul className="space-y-3">
+              {categories.map(([category, amount]) => (
+                <li key={category}>
+                  <div className="mb-1 flex justify-between text-sm">
+                    <span>{category}</span>
+                    <span className="tabular-nums text-muted-foreground">{formatCurrency(amount)}</span>
+                  </div>
+                  <ProgressBar value={(amount / expenses) * 100} />
+                </li>
+              ))}
+            </ul>
+          )}
         </Panel>
-        <Panel title="Movimientos" className="lg:col-span-2">
-          <ul className="divide-y divide-white/5">
-            {transactions.map((t) => (
-              <li key={t.id} className="flex items-center gap-3 py-2.5 text-sm">
-                <span className="w-14 text-xs text-muted-foreground">{formatDate(t.date, { day: "numeric", month: "short" })}</span>
-                <span className="min-w-0 flex-1 truncate">{t.concept}</span>
-                <span className="hidden text-xs text-muted-foreground sm:inline">{t.category}</span>
-                <span className={cn("w-24 text-right tabular-nums", t.type === "income" ? "text-foreground" : "text-muted-foreground")}>
-                  {t.type === "income" ? "+" : "−"}
-                  {formatCurrency(t.amount)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Panel>
+        <TransactionsPanel transactions={transactions} defaultDate={isCurrentMonth ? today : monthStart} />
       </div>
     </div>
   );
@@ -82,7 +82,10 @@ export async function FinanceView() {
 function Stat({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: string; color?: string }) {
   return (
     <div className="glass flex items-center gap-4 rounded-2xl p-5">
-      <span className="grid size-10 place-items-center rounded-xl bg-white/5 text-foreground [&_svg]:size-5" style={color ? { color } : undefined}>
+      <span
+        className={cn("grid size-10 place-items-center rounded-xl bg-white/5 text-foreground [&_svg]:size-5")}
+        style={color ? { color } : undefined}
+      >
         {icon}
       </span>
       <div>

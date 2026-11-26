@@ -1,11 +1,11 @@
 import { Panel } from "@/components/common/panel";
 import { addDays, formatLongDate } from "@/lib/dates";
 import { getToday } from "@/lib/today";
-import { getMockEvents } from "@/data/mock/planner";
 import { AgendaCard } from "@/features/dashboard/agenda-card";
 import { byPriority } from "@/features/dashboard/priority";
 import { AddTaskButton } from "./add-task-button";
 import { getTasksInRange } from "./data";
+import { getCalendarEvents } from "./events";
 import { itemsForDate } from "./day-items";
 import { EventsNote } from "./events-note";
 import { TaskList } from "./task-list";
@@ -14,8 +14,7 @@ import { TaskList } from "./task-list";
 export async function TodayView() {
   const today = await getToday();
   const tomorrow = addDays(today, 1);
-  const tasks = await getTasksInRange(today, tomorrow);
-  const events = getMockEvents(today);
+  const [tasks, events] = await Promise.all([getTasksInRange(today, tomorrow), getCalendarEvents(today, tomorrow)]);
 
   const { tasks: todayTasks, events: todayEvents } = itemsForDate(today, tasks, events);
   const pending = todayTasks.filter((t) => t.status === "pending").sort(byPriority);

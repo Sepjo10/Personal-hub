@@ -1,8 +1,8 @@
 import { addMonths, formatDate, monthGridDays, WEEKDAYS_SHORT } from "@/lib/dates";
 import { getToday } from "@/lib/today";
 import { cn } from "@/lib/utils";
-import { getMockEvents } from "@/data/mock/planner";
 import { getTasksInRange } from "./data";
+import { getCalendarEvents } from "./events";
 import { EventsNote } from "./events-note";
 import { getBaseDate, type SearchParams } from "./search-params";
 import type { EventKind } from "@/types/planner";
@@ -25,8 +25,10 @@ export async function MonthView({ searchParams }: { searchParams: SearchParams }
   const days = monthGridDays(base);
   const month = base.slice(0, 7);
   const isCurrentMonth = month === today.slice(0, 7);
-  const tasks = await getTasksInRange(days[0], days[days.length - 1]);
-  const events = getMockEvents(today);
+  const [tasks, events] = await Promise.all([
+    getTasksInRange(days[0], days[days.length - 1]),
+    getCalendarEvents(days[0], days[days.length - 1]),
+  ]);
 
   return (
     <>

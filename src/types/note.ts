@@ -5,6 +5,7 @@ export type Note = {
   title: string;
   content: string;
   kind: NoteKind;
-  pinned?: boolean;
-  updatedAt: string;
+  url?: string;
+  pinned: boolean;
+  updatedAt: string; // fecha AAAA-MM-DD (hora de Madrid)
 };

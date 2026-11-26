@@ -117,6 +117,16 @@
 }
 
 @layer base {
+  /* Indica al navegador que la app es oscura: así pinta en oscuro sus controles
+     nativos (desplegables de <select>, barras de scroll, autocompletado...). */
+  html {
+    color-scheme: dark;
+  }
+  option,
+  optgroup {
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+  }
   * {
     @apply border-border outline-ring/50;
   }

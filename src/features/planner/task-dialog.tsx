@@ -3,6 +3,8 @@
 import { createContext, use, useActionState, useEffect, useRef, useState, useTransition } from "react";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/common/date-picker";
+import { TimeField } from "@/components/common/time-field";
 import { todayISO } from "@/lib/dates";
 import type { Task } from "@/types/planner";
 import { createTask, deleteTask, updateTask, type TaskActionResult } from "./actions";
@@ -51,7 +53,7 @@ export function TaskDialogProvider({ children }: { children: React.ReactNode }) 
       <dialog
         ref={dialogRef}
         onClose={() => setState(null)}
-        className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-2xl border border-border bg-popover p-0 text-foreground shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+        className="m-auto w-[calc(100%-2rem)] max-w-lg overflow-visible rounded-2xl border border-border bg-popover p-0 text-foreground shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
       >
         {state && (
           <TaskForm
@@ -111,11 +113,11 @@ function TaskForm({ state, onDone }: { state: NonNullable<DialogState>; onDone: 
       <div className="grid grid-cols-2 gap-3">
         <div>
           <label htmlFor="dueDate" className={labelClass}>Fecha</label>
-          <input id="dueDate" name="dueDate" type="date" required defaultValue={task?.dueDate ?? (state.mode === "create" ? state.dueDate : undefined) ?? todayISO()} className={fieldClass} />
+          <DatePicker id="dueDate" name="dueDate" defaultValue={task?.dueDate ?? (state.mode === "create" ? state.dueDate : undefined) ?? todayISO()} />
         </div>
         <div>
           <label htmlFor="time" className={labelClass}>Hora (opcional)</label>
-          <input id="time" name="time" type="time" defaultValue={task?.time} className={fieldClass} />
+          <TimeField id="time" name="time" defaultValue={task?.time} />
         </div>
         <div>
           <label htmlFor="category" className={labelClass}>Categoría</label>

@@ -1,7 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/login"];
+// Páginas accesibles sin sesión. /privacidad es pública porque Google la exige para publicar la app OAuth.
+const PUBLIC_PATHS = ["/login", "/privacidad"];
+// Páginas de las que se redirige a / si ya hay sesión.
+const AUTH_PATHS = ["/login"];
 
 /**
  * Se ejecuta antes de cada petición (desde src/proxy.ts):
@@ -39,7 +42,7 @@ export async function updateSession(request: NextRequest) {
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
   if (!user && !isPublic) return redirectTo(request, "/login");
-  if (user && isPublic) return redirectTo(request, "/");
+  if (user && AUTH_PATHS.some((p) => pathname.startsWith(p))) return redirectTo(request, "/");
 
   return response;
 }

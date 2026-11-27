@@ -481,6 +481,8 @@ Implement:
 
 ### Phase 7 — PWA and notifications
 
+> Decision (Nov 2026): Phase 8 (Vercel deployment) is done BEFORE Phase 7, because PWA installation on Android requires HTTPS and the user wants daily access from PC and phone.
+
 - Configure the manifest.
 - Add application icons.
 - Test mobile installation.

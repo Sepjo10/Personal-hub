@@ -13,10 +13,11 @@ export type CurrentUser = { id: string; email: string };
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifica la firma del JWT localmente (claves públicas de Supabase, en caché).
+  // Si el proyecto usara claves antiguas, internamente consulta a Supabase como getUser().
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
 
-  if (!user) redirect("/login");
-  return { id: user.id, email: user.email ?? "" };
+  if (!claims?.sub) redirect("/login");
+  return { id: claims.sub, email: typeof claims.email === "string" ? claims.email : "" };
 });

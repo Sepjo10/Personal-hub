@@ -35,10 +35,10 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // getUser() valida el token con Supabase (no se fía solo de la cookie)
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims() verifica la firma del token (JWT) con las claves públicas de Supabase,
+  // sin una petición de red en cada navegación como hacía getUser(). Más rápido e igual de seguro.
+  const { data } = await supabase.auth.getClaims();
+  const user = data?.claims;
 
   const { pathname } = request.nextUrl;
   const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));

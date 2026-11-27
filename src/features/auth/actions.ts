@@ -18,8 +18,15 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
-  // Mensaje genérico: no revelamos si el correo existe o no
-  if (error) return { error: "Correo o contraseña incorrectos." };
+  if (error) {
+    // Se registra en el servidor (terminal o Logs de Vercel) para poder diagnosticar
+    console.error("Login fallido:", error.code ?? "sin código", error.status ?? "", error.message);
+    if (error.status === 429) return { error: "Demasiados intentos. Espera unos minutos y vuelve a probar." };
+    if (error.code === "email_not_confirmed") return { error: "El correo de esta cuenta no está confirmado." };
+    if (!error.status || error.status >= 500) return { error: "No se pudo contactar con el servidor de inicio de sesión." };
+    // Credenciales: mensaje genérico, no revelamos si el correo existe o no
+    return { error: "Correo o contraseña incorrectos." };
+  }
 
   redirect("/");
 }

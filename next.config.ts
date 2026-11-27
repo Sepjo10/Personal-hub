@@ -21,6 +21,7 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   poweredByHeader: false, // no anunciar "X-Powered-By: Next.js"
+  serverExternalPackages: ["web-push"], // librería de Node: se carga tal cual en el servidor
   turbopack: {
     rules: {
       "*.css": {

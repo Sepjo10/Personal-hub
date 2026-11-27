@@ -1,15 +1,16 @@
 import { Suspense } from "react";
-import { Bell, Palette, UserRound, type LucideIcon } from "lucide-react";
+import { Palette, UserRound, type LucideIcon } from "lucide-react";
 import { LogoutButton } from "@/components/layout/logout-button";
 import { getCurrentUser } from "@/lib/auth";
 import type { SearchParams } from "@/features/planner/search-params";
+import { isPushConfigured } from "@/lib/push";
 import { GoogleSection } from "./google-section";
+import { PushSettings } from "./push-settings";
 
 type SettingsSection = { icon: LucideIcon; title: string; description: React.ReactNode; phase?: string };
 
 const sections: SettingsSection[] = [
   { icon: Palette, title: "Apariencia", description: "Modo oscuro activado. El tema claro se valorará más adelante." },
-  { icon: Bell, title: "Notificaciones", description: "Recordatorios de tareas y eventos.", phase: "Fase 7" },
   {
     icon: UserRound,
     title: "Cuenta",
@@ -44,9 +45,12 @@ export function SettingsView({ searchParams }: { searchParams: SearchParams }) {
             {phase && <span className="text-xs text-muted-foreground">{phase}</span>}
           </section>
           {i === 0 && (
-            <Suspense fallback={<div className="glass h-20 animate-pulse rounded-2xl" />}>
-              <GoogleSection searchParams={searchParams} />
-            </Suspense>
+            <>
+              <Suspense fallback={<div className="glass h-20 animate-pulse rounded-2xl" />}>
+                <GoogleSection searchParams={searchParams} />
+              </Suspense>
+              <PushSettings configured={isPushConfigured()} />
+            </>
           )}
         </div>
       ))}

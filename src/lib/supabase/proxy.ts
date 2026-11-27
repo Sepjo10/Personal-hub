@@ -1,8 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-// Páginas accesibles sin sesión. /privacidad es pública porque Google la exige para publicar la app OAuth.
-const PUBLIC_PATHS = ["/login", "/privacidad"];
+// Rutas accesibles sin sesión:
+// - /privacidad: Google la exige para publicar la app OAuth.
+// - /api/cron: la llama Vercel (sin sesión); la ruta comprueba su propio secreto.
+const PUBLIC_PATHS = ["/login", "/privacidad", "/api/cron"];
 // Páginas de las que se redirige a / si ya hay sesión.
 const AUTH_PATHS = ["/login"];
 

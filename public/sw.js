@@ -26,6 +26,25 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(fetch(event.request).catch(() => caches.match(OFFLINE_URL)));
 });
 
+// Llega una notificación push del servidor (resumen diario o prueba)
+self.addEventListener("push", (event) => {
+  let data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch {
+    data = { body: event.data ? event.data.text() : "" };
+  }
+  event.waitUntil(
+    self.registration.showNotification(data.title || "Personal Hub", {
+      body: data.body || "",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/badge-96.png", // icono monocromo de la barra de estado de Android
+      tag: data.tag || "personal-hub",
+      data: { url: data.url || "/" },
+    }),
+  );
+});
+
 // Al pulsar una notificación: enfoca la app si está abierta o la abre en la URL indicada
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();

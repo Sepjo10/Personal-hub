@@ -37,8 +37,9 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || "Personal Hub", {
       body: data.body || "",
-      icon: "/icons/icon-192.png",
-      badge: "/icons/badge-96.png", // icono monocromo de la barra de estado de Android
+      // Sin "icon": en Android sale como imagen grande a la derecha y repetía el logo.
+      // badge = icono pequeño monocromo de la izquierda y de la barra de estado.
+      badge: "/icons/badge-96.png",
       tag: data.tag || "personal-hub",
       data: { url: data.url || "/" },
     }),

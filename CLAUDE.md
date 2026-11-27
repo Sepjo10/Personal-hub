@@ -483,6 +483,8 @@ Implement:
 
 > Decision (Nov 2026): Phase 8 (Vercel deployment) is done BEFORE Phase 7, because PWA installation on Android requires HTTPS and the user wants daily access from PC and phone.
 
+> Status (Nov 2026): DONE. Manifest (`src/app/manifest.ts`), icons in `public/icons/`, service worker `public/sw.js` (no caching of private data; offline page only). Notifications = daily Web Push digest: `push_subscriptions` (migration 0011, RLS), Vercel Cron `0 7 * * *` -> `/api/cron/daily-digest` (Bearer CRON_SECRET), data via security-definer `daily_digest()` gated by a SHA-256 hash of the secret in `private.cron_secret` (no service_role key). `web-push` is imported as `import * as webpush` (CommonJS, in `serverExternalPackages`). Install the PWA from Chrome (Brave blocks push). Performance: Vercel region `arn1` next to Supabase `eu-north-1`; sessions verified with `getClaims()`.
+
 - Configure the manifest.
 - Add application icons.
 - Test mobile installation.

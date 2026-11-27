@@ -10,6 +10,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Todas las rutas excepto archivos estáticos e imágenes
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)"],
+  // Todas las rutas excepto archivos estáticos, imágenes y los archivos de la PWA
+  // (el manifest, el service worker y la página sin conexión deben cargarse sin sesión)
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|manifest.webmanifest|sw.js|offline.html|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };

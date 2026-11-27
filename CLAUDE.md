@@ -491,6 +491,8 @@ Implement:
 
 ### Phase 8 — Deployment and final testing
 
+> Status (Nov 2026): DONE (before Phase 7). Deployed on Vercel (Hobby) from `main`; env vars set in Vercel (same `GOOGLE_TOKEN_KEY` as local). Google OAuth app published to Production (unverified, single user) with public `/privacidad` page. Supabase Site URL and redirect URLs set. Security headers in `next.config.ts` (securityheaders.com: A+). Tested: protected routes, login, data, Google events, Madrid time zone on UTC servers, mobile browser.
+
 - Configure Vercel.
 - Configure production environment variables.
 - Deploy the application.

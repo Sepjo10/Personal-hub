@@ -42,6 +42,7 @@ export async function sendTestPush(): Promise<PushActionResult> {
   if (error) return { ok: false, error: "No se pudieron leer tus dispositivos." };
 
   let sent = 0;
+  let configError = false;
   for (const s of data ?? []) {
     const result = await sendPush(
       { endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } },
@@ -49,6 +50,10 @@ export async function sendTestPush(): Promise<PushActionResult> {
     );
     if (result === "ok") sent++;
     if (result === "gone") await supabase.from("push_subscriptions").delete().eq("endpoint", s.endpoint);
+    if (result === "config") configError = true;
   }
-  return sent > 0 ? { ok: true, sent } : { ok: false, error: "No hay ningún dispositivo activo." };
+  if (sent > 0) return { ok: true, sent };
+  if (configError) return { ok: false, error: "Las claves VAPID del servidor faltan o no son válidas. Revisa las variables en Vercel." };
+  if ((data ?? []).length === 0) return { ok: false, error: "No hay ningún dispositivo activo. Pulsa Desactivar y vuelve a Activar." };
+  return { ok: false, error: "No se pudo enviar la notificación. Mira los Logs de Vercel." };
 }

@@ -1,4 +1,6 @@
-import webpush from "web-push";
+// web-push es CommonJS y se carga fuera del bundle (serverExternalPackages):
+// con "import webpush from" el valor por defecto llega undefined, así que se importa el módulo entero.
+import * as webpush from "web-push";
 
 /**
  * Envío de notificaciones Web Push (solo servidor).
@@ -20,9 +22,18 @@ function configure() {
   configured = true;
 }
 
-/** "gone": el dispositivo ya no existe (desinstalaste la app o quitaste el permiso): hay que borrarlo. */
-export async function sendPush(target: PushTarget, payload: PushPayload): Promise<"ok" | "gone" | "error"> {
-  configure();
+/**
+ * "gone": el dispositivo ya no existe (desinstalaste la app o quitaste el permiso): hay que borrarlo.
+ * "config": faltan las claves VAPID o tienen un formato no válido.
+ * Nunca lanza errores: quien llama decide qué mensaje mostrar.
+ */
+export async function sendPush(target: PushTarget, payload: PushPayload): Promise<"ok" | "gone" | "error" | "config"> {
+  try {
+    configure();
+  } catch (error) {
+    console.error("Push: configuración VAPID no válida:", error instanceof Error ? error.message : error);
+    return "config";
+  }
   try {
     await webpush.sendNotification(target, JSON.stringify(payload), { TTL: 6 * 3600, urgency: "normal" });
     return "ok";

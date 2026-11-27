@@ -67,6 +67,9 @@ export function TaskDialogProvider({ children }: { children: React.ReactNode }) 
   );
 }
 
+/** Categorías de las tareas (un <select> normal: <datalist> filtraba y solo mostraba la ya escrita). */
+const CATEGORIES = ["General", "Universidad", "Carrera", "Personal", "Finanzas", "Ocio"];
+
 const fieldClass =
   "h-10 w-full rounded-lg border border-input bg-white/5 px-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/30";
 const labelClass = "mb-1.5 block text-sm text-muted-foreground";
@@ -121,13 +124,12 @@ function TaskForm({ state, onDone }: { state: NonNullable<DialogState>; onDone: 
         </div>
         <div>
           <label htmlFor="category" className={labelClass}>Categoría</label>
-          <input id="category" name="category" list="task-categories" maxLength={50} defaultValue={task?.category ?? "General"} className={fieldClass} />
-          <datalist id="task-categories">
-            <option value="Universidad" />
-            <option value="Carrera" />
-            <option value="Personal" />
-            <option value="General" />
-          </datalist>
+          <select id="category" name="category" defaultValue={task?.category ?? "General"} className={fieldClass}>
+            {/* Si una tarea antigua tiene otra categoría, se conserva como opción */}
+            {[...CATEGORIES, ...(task && !CATEGORIES.includes(task.category) ? [task.category] : [])].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="priority" className={labelClass}>Prioridad</label>
